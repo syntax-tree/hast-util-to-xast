@@ -4,12 +4,16 @@
   "description": "hast utility to transform to xast",
   "license": "MIT",
   "keywords": [
-    "xast",
-    "hast",
     "unist",
-    "dsl",
+    "hast",
+    "xast",
+    "hast-util",
+    "xast-util",
+    "util",
+    "utility",
     "xml",
-    "html"
+    "html",
+    "dsl"
   ],
   "repository": "syntax-tree/hast-util-to-xast",
   "bugs": "https://github.com/syntax-tree/hast-util-to-xast/issues",
