@@ -8,12 +8,12 @@ var s = require('hastscript/svg')
 var x = require('xastscript')
 var toXast = require('.')
 
-test('toXast', function(t) {
-  t.test('main', function(t) {
+test('toXast', function (t) {
+  t.test('main', function (t) {
     t.equal(typeof toXast, 'function', 'should expose a function')
 
     t.throws(
-      function() {
+      function () {
         toXast()
       },
       /Error: Expected node, not `undefined`/,
@@ -21,7 +21,7 @@ test('toXast', function(t) {
     )
 
     t.throws(
-      function() {
+      function () {
         toXast({type: 'raw', value: '<script>alert(1)</script>'})
       },
       /Error: Cannot transform node of type `raw`/,
@@ -69,7 +69,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('root', function(t) {
+  t.test('root', function (t) {
     t.deepEqual(
       toXast(u('root', [h('div', 'Alpha')])),
       u('root', [x('div', {xmlns: ns.html}, 'Alpha')]),
@@ -79,7 +79,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('text', function(t) {
+  t.test('text', function (t) {
     t.deepEqual(
       toXast(u('text', 'Alpha')),
       u('text', 'Alpha'),
@@ -95,7 +95,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('comment', function(t) {
+  t.test('comment', function (t) {
     t.deepEqual(
       toXast(u('comment', 'Alpha')),
       u('comment', 'Alpha'),
@@ -111,7 +111,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('doctype', function(t) {
+  t.test('doctype', function (t) {
     t.deepEqual(
       toXast(u('doctype', {name: 'a'})),
       u('doctype', {name: 'a', public: undefined, system: undefined}),
@@ -127,7 +127,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('element', function(t) {
+  t.test('element', function (t) {
     t.deepEqual(
       toXast(h('p', [h('a', 'A'), ' & ', h('b', 'B'), '.'])),
       x('p', {xmlns: ns.html}, [x('a', 'A'), ' & ', x('b', 'B'), '.']),
@@ -170,7 +170,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('attributes', function(t) {
+  t.test('attributes', function (t) {
     t.deepEqual(
       toXast(u('element', {tagName: 'br'}, [])),
       x('br', {xmlns: ns.html}),
@@ -306,7 +306,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('svg', function(t) {
+  t.test('svg', function (t) {
     t.deepEqual(
       toXast(
         s(
@@ -406,7 +406,7 @@ test('toXast', function(t) {
     t.end()
   })
 
-  t.test('mathml', function(t) {
+  t.test('mathml', function (t) {
     t.deepEqual(
       toXast(
         u('element', {tagName: 'p', properties: {}}, [

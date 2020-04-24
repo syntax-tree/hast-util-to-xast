@@ -31,8 +31,8 @@ function unknown(value) {
 }
 
 function toXast(tree, options) {
-  var opts = typeof options === 'string' ? {space: options} : options || {}
-  var space = opts.space === 'svg' ? 'svg' : 'html'
+  var settings = typeof options === 'string' ? {space: options} : options || {}
+  var space = settings.space === 'svg' ? 'svg' : 'html'
 
   return one(tree, {schema: space === 'svg' ? svg : html, ns: null})
 }
