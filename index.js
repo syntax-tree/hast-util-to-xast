@@ -143,7 +143,7 @@ function toAttributes(props, config) {
     name = info.attribute
     value = props[key]
 
-    // Ignore nully, false, and `NaN` values, and falsey known booleans.
+    // Ignore nullish, false, and `NaN` values, and falsey known booleans.
     if (
       value === null ||
       value === undefined ||
