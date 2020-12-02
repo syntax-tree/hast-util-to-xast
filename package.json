@@ -32,7 +32,7 @@
     "comma-separated-tokens": "^1.0.0",
     "property-information": "^5.0.0",
     "space-separated-tokens": "^1.0.0",
-    "unist-util-position": "^3.0.0",
+    "unist-util-position": "^3.1.0",
     "web-namespaces": "^1.0.0",
     "xtend": "^4.0.0",
     "zwitch": "^1.0.0"
@@ -72,10 +72,12 @@
     "prettier": true,
     "esnext": false,
     "rules": {
-      "unicorn/prefer-number-properties": "off",
-      "unicorn/prefer-includes": "off",
+      "eqeqeq": "off",
+      "guard-for-in": "off",
+      "no-eq-null": "off",
       "no-self-compare": "off",
-      "guard-for-in": "off"
+      "unicorn/prefer-number-properties": "off",
+      "unicorn/prefer-includes": "off"
     }
   },
   "remarkConfig": {

@@ -1,26 +1,28 @@
 'use strict'
 
-var xtend = require('xtend')
-var zwitch = require('zwitch')
-var namespaces = require('web-namespaces')
+module.exports = toXast
+
+var comma = require('comma-separated-tokens')
 var html = require('property-information/html')
 var svg = require('property-information/svg')
 var find = require('property-information/find')
-var spaces = require('space-separated-tokens').stringify
-var commas = require('comma-separated-tokens').stringify
+var space = require('space-separated-tokens')
 var position = require('unist-util-position')
+var namespaces = require('web-namespaces')
+var xtend = require('xtend')
+var zwitch = require('zwitch')
 
-module.exports = toXast
-
-var one = zwitch('type')
-
-one.invalid = invalid
-one.unknown = unknown
-one.handlers.root = root
-one.handlers.element = element
-one.handlers.text = text
-one.handlers.comment = comment
-one.handlers.doctype = doctype
+var one = zwitch('type', {
+  handlers: {
+    root: root,
+    element: element,
+    text: text,
+    comment: comment,
+    doctype: doctype
+  },
+  invalid: invalid,
+  unknown: unknown
+})
 
 function invalid(value) {
   throw new Error('Expected node, not `' + value + '`')
@@ -31,9 +33,7 @@ function unknown(value) {
 }
 
 function toXast(tree, options) {
-  var settings = typeof options === 'string' ? {space: options} : options || {}
-  var space = settings.space === 'svg' ? 'svg' : 'html'
-
+  var space = typeof options === 'string' ? options : (options || {}).space
   return one(tree, {schema: space === 'svg' ? svg : html, ns: null})
 }
 
@@ -55,123 +55,102 @@ function doctype(node, config) {
     {
       type: 'doctype',
       name: node.name || '',
-      public: node.public || undefined,
-      system: node.system || undefined
+      public: node.public,
+      system: node.system
     },
     config
   )
 }
 
 function element(node, parentConfig) {
-  var schema = parentConfig.schema
-  var name = node.tagName
   var props = node.properties || {}
-  var xmlns = props.xmlns || null
-  var ns = namespaces[schema.space]
-  var attrs = {}
-  var config
-
-  if (xmlns) {
-    if (xmlns === namespaces.svg) {
-      schema = svg
-      ns = xmlns
-    } else if (xmlns === namespaces.html) {
-      schema = html
-      ns = xmlns
-    } else {
-      // We don’t support non-HTML, non-SVG namespaces, so stay in the same.
-    }
-  } else if (ns === namespaces.html && name === 'svg') {
-    schema = svg
-    ns = namespaces.svg
-  }
-
-  if (parentConfig.ns !== ns) {
-    attrs.xmlns = ns
-  }
-
-  config = xtend(parentConfig, {schema: schema, ns: ns})
-  attrs = xtend(attrs, toAttributes(props, config))
-
-  return patch(node, {type: 'element', name: name, attributes: attrs}, config)
-}
-
-function patch(origin, node, config) {
-  var pos = origin.position
-  var hastChildren = origin.children
-  var length
-  var children
-  var index
-
-  if (
-    config.ns === namespaces.html &&
-    origin.type === 'element' &&
-    origin.tagName === 'template'
-  ) {
-    node.children = root(origin.content, config).children
-  } else if (origin.type === 'element' || origin.type === 'root') {
-    length = hastChildren && hastChildren.length
-    children = []
-    index = -1
-
-    while (++index < length) {
-      children[index] = one(hastChildren[index], config)
-    }
-
-    node.children = children
-  }
-
-  if (pos) {
-    node.position = {
-      start: position.start(origin),
-      end: position.end(origin)
-    }
-  }
-
-  return node
-}
-
-function toAttributes(props, config) {
+  var schema = parentConfig.schema
   var attributes = {}
+  var config
   var value
   var key
   var info
-  var name
+
+  if (props.xmlns === namespaces.html) {
+    schema = html
+  } else if (props.xmlns === namespaces.svg) {
+    schema = svg
+  } else if (props.xmlns) {
+    // We don’t support non-HTML, non-SVG namespaces, so stay in the same.
+  } else if (schema === html && node.tagName === 'svg') {
+    schema = svg
+  }
+
+  config = xtend(parentConfig, {schema: schema, ns: namespaces[schema.space]})
+
+  if (parentConfig.ns !== config.ns) {
+    attributes.xmlns = config.ns
+  }
 
   for (key in props) {
-    info = find(config.schema, key)
-    name = info.attribute
+    info = find(schema, key)
     value = props[key]
 
     // Ignore nullish, false, and `NaN` values, and falsey known booleans.
     if (
-      value === null ||
-      value === undefined ||
+      value == null ||
       value === false ||
       value !== value ||
-      (info.boolean && !value)
+      (!value && info.boolean)
     ) {
       continue
-    }
-
-    // Accept `array`.
-    // Most props are space-separated.
-    if (typeof value === 'object' && 'length' in value) {
-      value = (info.commaSeparated ? commas : spaces)(value)
     }
 
     // Treat `true` and truthy known booleans.
     if (value === true || info.boolean) {
       value = ''
     }
-
+    // Accept `array`.
+    // Most props are space-separated.
+    else if (typeof value === 'object' && 'length' in value) {
+      value = info.commaSeparated
+        ? comma.stringify(value)
+        : space.stringify(value)
+    }
     // Cast everything else to string.
-    if (typeof value !== 'string') {
+    else if (typeof value !== 'string') {
       value = String(value)
     }
 
-    attributes[name] = value
+    attributes[info.attribute] = value
   }
 
-  return attributes
+  return patch(
+    node,
+    {type: 'element', name: node.tagName, attributes: attributes},
+    config
+  )
+}
+
+function patch(origin, node, config) {
+  var index
+
+  if (
+    config.schema === html &&
+    origin.type === 'element' &&
+    origin.tagName === 'template'
+  ) {
+    node.children = root(origin.content, config).children
+  } else if (
+    origin.children &&
+    (origin.type === 'element' || origin.type === 'root')
+  ) {
+    node.children = []
+    index = -1
+
+    while (++index < origin.children.length) {
+      node.children[index] = one(origin.children[index], config)
+    }
+  }
+
+  if (origin.position) {
+    node.position = position(origin)
+  }
+
+  return node
 }
