@@ -12,6 +12,7 @@ test('toXast', function (t) {
 
     t.throws(
       function () {
+        // @ts-ignore runtime.
         toXast()
       },
       /Error: Expected node, not `undefined`/,
@@ -20,6 +21,7 @@ test('toXast', function (t) {
 
     t.throws(
       function () {
+        // @ts-ignore well-known.
         toXast({type: 'raw', value: '<script>alert(1)</script>'})
       },
       /Error: Cannot transform node of type `raw`/,
@@ -85,6 +87,7 @@ test('toXast', function (t) {
     )
 
     t.deepEqual(
+      // @ts-ignore runtime.
       toXast(u('text')),
       u('text', ''),
       'should support a void text node'
@@ -101,6 +104,7 @@ test('toXast', function (t) {
     )
 
     t.deepEqual(
+      // @ts-ignore runtime.
       toXast(u('comment')),
       u('comment', ''),
       'should support a void comment node'
@@ -111,15 +115,10 @@ test('toXast', function (t) {
 
   t.test('doctype', function (t) {
     t.deepEqual(
-      toXast(u('doctype', {name: 'a'})),
-      u('doctype', {name: 'a', public: undefined, system: undefined}),
-      'should support a doctype node'
-    )
-
-    t.deepEqual(
+      // @ts-ignore hast@next.
       toXast(u('doctype')),
-      u('doctype', {name: '', public: undefined, system: undefined}),
-      'should support a doctype without a name'
+      u('doctype', {name: 'html', public: undefined, system: undefined}),
+      'should support a doctype node'
     )
 
     t.end()
