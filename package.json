@@ -1,6 +1,6 @@
 {
   "name": "hast-util-to-xast",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "hast utility to transform to xast",
   "license": "MIT",
   "keywords": [
