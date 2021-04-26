@@ -13,6 +13,9 @@
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -32,11 +35,11 @@ Say we have an `example.html` file, that looks as follows:
 …and our script, `example.js`, looks as follows:
 
 ```js
-var fs = require('fs')
-var unified = require('unified')
-var parse = require('rehype-parse')
-var toXast = require('hast-util-to-xast')
-var toXml = require('xast-util-to-xml')
+import fs from 'fs'
+import unified from 'unified'
+import parse from 'rehype-parse'
+import {toXast} from 'hast-util-to-xast'
+import {toXml} from 'xast-util-to-xml'
 
 // Get the HTML syntax tree:
 var hast = unified()
@@ -59,6 +62,9 @@ Yields:
 ```
 
 ## API
+
+This package exports the following identifiers: `toXast`.
+There is no default export.
 
 ### `toXast(node[, space|options])`
 

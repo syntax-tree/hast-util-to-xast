@@ -1,12 +1,10 @@
-'use strict'
-
-var test = require('tape')
-var ns = require('web-namespaces')
-var u = require('unist-builder')
-var h = require('hastscript')
-var s = require('hastscript/svg')
-var x = require('xastscript')
-var toXast = require('.')
+import test from 'tape'
+import {webNamespaces as ns} from 'web-namespaces'
+import {u} from 'unist-builder'
+import h from 'hastscript'
+import s from 'hastscript/svg.js'
+import x from 'xastscript'
+import {toXast} from './index.js'
 
 test('toXast', function (t) {
   t.test('main', function (t) {
@@ -190,7 +188,7 @@ test('toXast', function (t) {
     )
 
     t.deepEqual(
-      toXast(u('element', {tagName: 'br', properties: {prop: NaN}}, [])),
+      toXast(u('element', {tagName: 'br', properties: {prop: Number.NaN}}, [])),
       x('br', {xmlns: ns.html}),
       'should support attribute values: `NaN`'
     )
