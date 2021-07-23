@@ -1,9 +1,8 @@
 import test from 'tape'
 import {webNamespaces as ns} from 'web-namespaces'
 import {u} from 'unist-builder'
-import h from 'hastscript'
-import s from 'hastscript/svg.js'
-import x from 'xastscript'
+import {h, s} from 'hastscript'
+import {x} from 'xastscript'
 import {toXast} from './index.js'
 
 test('toXast', (t) => {

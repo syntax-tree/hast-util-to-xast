@@ -6,7 +6,8 @@
  * @typedef {import('hast').Comment} HastComment
  * @typedef {import('hast').Text} HastText
  * @typedef {import('hast').Properties[string]} HastPropertyValue
- * @typedef {import('property-information').html['property'][string]} Info
+ * @typedef {import('property-information').Info} Info
+ * @typedef {import('property-information').Schema} Schema
  * @typedef {import('xast').Root} BaseXastRoot
  * @typedef {import('xast').Element} XastElement
  * @typedef {import('xast').Text} XastText
@@ -22,7 +23,6 @@
  * @typedef Options
  * @property {Space} [space]
  *
- * @typedef {html|svg} Schema
  * @typedef {webNamespaces[Space]} Namespace
  *
  * @typedef Context
@@ -139,10 +139,8 @@ function element(node, parentConfig) {
   }
 
   /** @type {Context} */
-  const config = Object.assign({}, parentConfig, {
-    schema,
-    ns: schema.space ? ns[schema.space] : undefined
-  })
+  // @ts-expect-error: `schema.space` is set because html, svg have it set.
+  const config = Object.assign({}, parentConfig, {schema, ns: ns[schema.space]})
 
   if (parentConfig.ns !== config.ns) {
     attributes.xmlns = config.ns
