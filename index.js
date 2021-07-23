@@ -184,12 +184,15 @@ function element(node, parentConfig) {
   }
 
   // @ts-ignore Assume no `doctypes` in `element.`
-  return patch(node, {
-    type: 'element',
-    name: node.tagName,
-    attributes,
-    children: all(node, config)
-  })
+  return patch(
+    node,
+    /** @type {XastElement} */ ({
+      type: 'element',
+      name: node.tagName,
+      attributes,
+      children: all(node, config)
+    })
+  )
 }
 
 /**
