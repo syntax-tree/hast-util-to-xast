@@ -35,19 +35,19 @@ Say we have an `example.html` file, that looks as follows:
 …and our script, `example.js`, looks as follows:
 
 ```js
-import fs from 'fs'
-import unified from 'unified'
-import parse from 'rehype-parse'
+import fs from 'node:fs'
+import {unified} from 'unified'
+import rehypeParse from 'rehype-parse'
 import {toXast} from 'hast-util-to-xast'
 import {toXml} from 'xast-util-to-xml'
 
 // Get the HTML syntax tree:
-var hast = unified()
-  .use(parse)
+const hast = unified()
+  .use(rehypeParse)
   .parse(fs.readFileSync('example.html'))
 
 // Turn hast to xast:
-var xast = toXast(hast)
+const xast = toXast(hast)
 
 // Serialize xast:
 console.log(toXml(xast))

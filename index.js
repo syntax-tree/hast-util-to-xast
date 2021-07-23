@@ -37,9 +37,9 @@ import {position} from 'unist-util-position'
 import {webNamespaces} from 'web-namespaces'
 import {zwitch} from 'zwitch'
 
-var own = {}.hasOwnProperty
+const own = {}.hasOwnProperty
 
-var one = zwitch('type', {
+const one = zwitch('type', {
   handlers: {root, element, text, comment, doctype},
   invalid,
   unknown
@@ -64,7 +64,7 @@ function unknown(value) {
  * @param {Space|Options} [options]
  */
 export function toXast(tree, options) {
-  var space = typeof options === 'string' ? options : (options || {}).space
+  const space = typeof options === 'string' ? options : (options || {}).space
   // @ts-ignore types are wrong.
   return one(tree, {schema: space === 'svg' ? svg : html, ns: null})
 }
@@ -114,18 +114,16 @@ function doctype(node) {
  */
 // eslint-disable-next-line complexity
 function element(node, parentConfig) {
-  var props = node.properties || {}
-  var schema = parentConfig.schema
+  const props = node.properties || {}
+  let schema = parentConfig.schema
   /** @type {XastAttributes} */
-  var attributes = {}
-  /** @type {Context} */
-  var config
+  const attributes = {}
   /** @type {HastPropertyValue} */
-  var value
+  let value
   /** @type {string} */
-  var key
+  let key
   /** @type {Info} */
-  var info
+  let info
 
   if (props.xmlns === webNamespaces.html) {
     schema = html
@@ -137,7 +135,8 @@ function element(node, parentConfig) {
     schema = svg
   }
 
-  config = Object.assign({}, parentConfig, {
+  /** @type {Context} */
+  const config = Object.assign({}, parentConfig, {
     schema,
     ns: webNamespaces[schema.space]
   })
@@ -202,8 +201,8 @@ function element(node, parentConfig) {
  */
 function all(origin, config) {
   /** @type {Array.<XastElement|XastText|XastComment|XastDoctype>} */
-  var result = []
-  var index = -1
+  const result = []
+  let index = -1
 
   if (
     config.schema === html &&

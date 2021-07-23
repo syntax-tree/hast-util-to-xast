@@ -6,12 +6,12 @@ import s from 'hastscript/svg.js'
 import x from 'xastscript'
 import {toXast} from './index.js'
 
-test('toXast', function (t) {
-  t.test('main', function (t) {
+test('toXast', (t) => {
+  t.test('main', (t) => {
     t.equal(typeof toXast, 'function', 'should expose a function')
 
     t.throws(
-      function () {
+      () => {
         // @ts-ignore runtime.
         toXast()
       },
@@ -20,7 +20,7 @@ test('toXast', function (t) {
     )
 
     t.throws(
-      function () {
+      () => {
         // @ts-ignore well-known.
         toXast({type: 'raw', value: '<script>alert(1)</script>'})
       },
@@ -69,7 +69,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('root', function (t) {
+  t.test('root', (t) => {
     t.deepEqual(
       toXast(u('root', [h('div', 'Alpha')])),
       u('root', [x('div', {xmlns: ns.html}, 'Alpha')]),
@@ -79,7 +79,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('text', function (t) {
+  t.test('text', (t) => {
     t.deepEqual(
       toXast(u('text', 'Alpha')),
       u('text', 'Alpha'),
@@ -96,7 +96,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('comment', function (t) {
+  t.test('comment', (t) => {
     t.deepEqual(
       toXast(u('comment', 'Alpha')),
       u('comment', 'Alpha'),
@@ -113,7 +113,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('doctype', function (t) {
+  t.test('doctype', (t) => {
     t.deepEqual(
       // @ts-ignore hast@next.
       toXast(u('doctype')),
@@ -124,7 +124,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('element', function (t) {
+  t.test('element', (t) => {
     t.deepEqual(
       toXast(h('p', [h('a', 'A'), ' & ', h('b', 'B'), '.'])),
       x('p', {xmlns: ns.html}, [x('a', 'A'), ' & ', x('b', 'B'), '.']),
@@ -167,7 +167,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('attributes', function (t) {
+  t.test('attributes', (t) => {
     t.deepEqual(
       toXast(u('element', {tagName: 'br'}, [])),
       x('br', {xmlns: ns.html}),
@@ -303,7 +303,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('svg', function (t) {
+  t.test('svg', (t) => {
     t.deepEqual(
       toXast(
         s(
@@ -403,7 +403,7 @@ test('toXast', function (t) {
     t.end()
   })
 
-  t.test('mathml', function (t) {
+  t.test('mathml', (t) => {
     t.deepEqual(
       toXast(
         u('element', {tagName: 'p', properties: {}}, [
