@@ -303,6 +303,22 @@ test('toXast', (t) => {
     t.end()
   })
 
+  t.test('aria', (t) => {
+    t.deepEqual(
+      toXast(
+        h('a', {ariaHidden: 'true', href: '#lorem-ipsum'}, [
+          h('span.icon.icon-link')
+        ])
+      ),
+      x('a', {xmlns: ns.html, 'aria-hidden': 'true', href: '#lorem-ipsum'}, [
+        x('span', {class: 'icon icon-link'})
+      ]),
+      'should support aria'
+    )
+
+    t.end()
+  })
+
   t.test('svg', (t) => {
     t.deepEqual(
       toXast(
