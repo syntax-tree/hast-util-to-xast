@@ -37,11 +37,15 @@ import {position} from 'unist-util-position'
 import {webNamespaces} from 'web-namespaces'
 import {zwitch} from 'zwitch'
 
+const ns = /** @type {Record<string, string>} */ (webNamespaces)
+
 const own = {}.hasOwnProperty
 
 const one = zwitch('type', {
+  // @ts-expect-error: hush.
   handlers: {root, element, text, comment, doctype},
   invalid,
+  // @ts-expect-error: hush.
   unknown
 })
 
@@ -65,7 +69,6 @@ function unknown(value) {
  */
 export function toXast(tree, options) {
   const space = typeof options === 'string' ? options : (options || {}).space
-  // @ts-ignore types are wrong.
   return one(tree, {schema: space === 'svg' ? svg : html, ns: null})
 }
 
@@ -138,7 +141,7 @@ function element(node, parentConfig) {
   /** @type {Context} */
   const config = Object.assign({}, parentConfig, {
     schema,
-    ns: webNamespaces[schema.space]
+    ns: schema.space ? ns[schema.space] : undefined
   })
 
   if (parentConfig.ns !== config.ns) {
@@ -182,7 +185,6 @@ function element(node, parentConfig) {
     attributes[info.attribute] = value
   }
 
-  // @ts-ignore Assume no `doctypes` in `element.`
   return patch(
     node,
     /** @type {XastElement} */ ({
@@ -214,7 +216,7 @@ function all(origin, config) {
   }
 
   while (++index < origin.children.length) {
-    // @ts-ignore `zwitch` types are wrong.
+    // @ts-expect-error `zwitch` types are wrong.
     result[index] = one(origin.children[index], config)
   }
 
