@@ -197,10 +197,10 @@ function element(node, parentConfig) {
 /**
  * @param {HastRoot|HastElement} origin
  * @param {Context} config
- * @returns {Array.<XastElement|XastText|XastComment|XastDoctype>}
+ * @returns {Array<XastElement|XastText|XastComment|XastDoctype>}
  */
 function all(origin, config) {
-  /** @type {Array.<XastElement|XastText|XastComment|XastDoctype>} */
+  /** @type {Array<XastElement|XastText|XastComment|XastDoctype>} */
   const result = []
   let index = -1
 
