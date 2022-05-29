@@ -79,15 +79,12 @@ Say our document `example.html` contains:
 
 ```js
 import fs from 'node:fs/promises'
-import {unified} from 'unified'
-import rehypeParse from 'rehype-parse'
+import {fromHtml} from 'hast-util-from-html'
 import {toXast} from 'hast-util-to-xast'
 import {toXml} from 'xast-util-to-xml'
 
 // Get the HTML syntax tree:
-const hast = unified()
-  .use(rehypeParse)
-  .parse(await fs.readFile('example.html'))
+const hast = fromHtml(await fs.readFile('example.html'))
 
 // Turn hast to xast:
 const xast = toXast(hast)
