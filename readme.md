@@ -17,7 +17,9 @@
 *   [Install](#install)
 *   [Use](#use)
 *   [API](#api)
-    *   [`toXast(node[, space|options])`](#toxastnode-spaceoptions)
+    *   [`toXast(tree[, space|options])`](#toxasttree-spaceoptions)
+    *   [`Options`](#options)
+    *   [`Space`](#space-1)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Security](#security)
@@ -45,7 +47,7 @@ hast into estree (JavaScript) as JSX, which has some similarities to XML.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+In Node.js (version 14.14+ and or 16.0+), install with [npm][]:
 
 ```sh
 npm install hast-util-to-xast
@@ -103,38 +105,62 @@ console.log(toXml(xast))
 
 ## API
 
-This package exports the identifier `toXast`.
+This package exports the identifier [`toXast`][toxast].
 There is no default export.
 
-### `toXast(node[, space|options])`
+### `toXast(tree[, space|options])`
 
-[hast][] utility to transform to [xast][].
+Turn a [hast][] tree into a [xast][] tree.
 
-##### `options`
+###### Parameters
 
-Configuration (optional).
+*   `tree` ([`HastNode`][hast-node])
+    — hast tree to transform
+*   `space` ([`Space`][space], optional)
+    — same as options of `{space: space}`
+*   `options` ([`Options`][options], optional)
+    — configuration
 
-###### `options.space`
+###### Returns
 
-Whether the given `node` is in the HTML or SVG space (enum, `'svg'` or `'html'`,
-default: `'html'`).
+xast tree ([`XastNode`][xast-node]).
 
-If an `svg` element is found in the HTML space, `toXast` automatically switches
-to the SVG space when entering the element, and switches back when exiting.
+### `Options`
+
+Configuration (TypeScript type).
+
+##### Fields
+
+###### `space`
+
+Which space the document is in.
+
+When an `<svg>` element is found in the HTML space, this package already
+automatically switches to and from the SVG space when entering and exiting it.
 
 You can also switch explicitly with `xmlns` properties in hast, but note that
 only HTML and SVG are supported.
 
+### `Space`
+
+Namespace (TypeScript type).
+
+###### Type
+
+```ts
+type Space = 'html' | 'svg'
+```
+
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types `Options` and `Space`.
+It exports the additional types [`Options`][options] and [`Space`][space].
 
 ## Compatibility
 
 Projects maintained by the unified collective are compatible with all maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, 16.0+, and 18.0+.
+As of now, that is Node.js 14.14+ and 16.0+.
 Our projects sometimes work with older versions, but this is not guaranteed.
 
 ## Security
@@ -145,9 +171,9 @@ using this utility.
 
 ## Related
 
-*   [`hastscript`][h]
+*   [`hastscript`](https://github.com/syntax-tree/hastscript)
     — create **[hast][]** (HTML or SVG) trees
-*   [`xastscript`][x]
+*   [`xastscript`](https://github.com/syntax-tree/xastscript)
     — create **[xast][]** (XML) trees
 *   [`xast-util-to-xml`](https://github.com/syntax-tree/xast-util-to-xml)
     — serialize as XML
@@ -216,12 +242,18 @@ abide by its terms.
 
 [hast]: https://github.com/syntax-tree/hast
 
-[xast]: https://github.com/syntax-tree/xast
+[hast-node]: https://github.com/syntax-tree/hast#nodes
 
 [hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
 
-[h]: https://github.com/syntax-tree/hastscript
-
-[x]: https://github.com/syntax-tree/xastscript
-
 [hast-util-to-estree]: https://github.com/syntax-tree/hast-util-to-estree
+
+[xast]: https://github.com/syntax-tree/xast
+
+[xast-node]: https://github.com/syntax-tree/xast#nodes
+
+[toxast]: #toxasttree-spaceoptions
+
+[options]: #options
+
+[space]: #space-1
