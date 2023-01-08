@@ -5,8 +5,15 @@ import {u} from 'unist-builder'
 import {h, s} from 'hastscript'
 import {x} from 'xastscript'
 import {toXast} from './index.js'
+import * as mod from './index.js'
 
 test('toXast', async (t) => {
+  assert.deepEqual(
+    Object.keys(mod).sort(),
+    ['toXast'],
+    'should expose the public api'
+  )
+
   await t.test('main', () => {
     assert.equal(typeof toXast, 'function', 'should expose a function')
 
