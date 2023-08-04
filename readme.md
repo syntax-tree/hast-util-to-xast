@@ -17,7 +17,7 @@
 *   [Install](#install)
 *   [Use](#use)
 *   [API](#api)
-    *   [`toXast(tree[, space|options])`](#toxasttree-spaceoptions)
+    *   [`toXast(tree[, options])`](#toxasttree-options)
     *   [`Options`](#options)
     *   [`Space`](#space-1)
 *   [Types](#types)
@@ -108,7 +108,7 @@ console.log(toXml(xast))
 This package exports the identifier [`toXast`][toxast].
 There is no default export.
 
-### `toXast(tree[, space|options])`
+### `toXast(tree[, options])`
 
 Turn a [hast][] tree into a [xast][] tree.
 
@@ -116,8 +116,6 @@ Turn a [hast][] tree into a [xast][] tree.
 
 *   `tree` ([`HastNode`][hast-node])
     — hast tree to transform
-*   `space` ([`Space`][space], optional)
-    — same as options of `{space: space}`
 *   `options` ([`Options`][options], optional)
     — configuration
 
@@ -252,7 +250,7 @@ abide by its terms.
 
 [xast-node]: https://github.com/syntax-tree/xast#nodes
 
-[toxast]: #toxasttree-spaceoptions
+[toxast]: #toxasttree-options
 
 [options]: #options
 

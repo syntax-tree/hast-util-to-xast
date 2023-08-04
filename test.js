@@ -41,7 +41,7 @@ test('main', async function (t) {
 
   await t.test('should support `space` (svg)', async function () {
     assert.deepEqual(
-      toXast(s('circle'), 'svg'),
+      toXast(s('circle'), {space: 'svg'}),
       x('circle', {xmlns: webNamespaces.svg})
     )
   })
@@ -318,7 +318,7 @@ test('attributes', async function (t) {
             },
             []
           ),
-          'svg'
+          {space: 'svg'}
         ),
         x('use', {
           xmlns: webNamespaces.svg,
