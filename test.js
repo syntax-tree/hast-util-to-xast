@@ -5,14 +5,16 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {h, s} from 'hastscript'
+import {toXast} from 'hast-util-to-xast'
 import {u} from 'unist-builder'
 import {webNamespaces} from 'web-namespaces'
 import {x} from 'xastscript'
-import {toXast} from './index.js'
 
 test('main', async function (t) {
   await t.test('should expose the public api', async function () {
-    assert.deepEqual(Object.keys(await import('./index.js')).sort(), ['toXast'])
+    assert.deepEqual(Object.keys(await import('hast-util-to-xast')).sort(), [
+      'toXast'
+    ])
   })
 
   await t.test('should throw without node', async function () {
