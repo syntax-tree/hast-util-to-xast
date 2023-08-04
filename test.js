@@ -66,8 +66,8 @@ test('toXast', async (t) => {
         type: 'text',
         value: 'foo',
         position: {
-          start: {line: 1, column: 1, offset: null},
-          end: {line: 1, column: 4, offset: null}
+          start: {line: 1, column: 1, offset: undefined},
+          end: {line: 1, column: 4, offset: undefined}
         }
       },
       'should support positional information'
@@ -114,7 +114,6 @@ test('toXast', async (t) => {
 
   await t.test('doctype', () => {
     assert.deepEqual(
-      // @ts-expect-error hast@next.
       toXast(u('doctype')),
       u('doctype', {name: 'html', public: undefined, system: undefined}),
       'should support a doctype node'
@@ -164,7 +163,10 @@ test('toXast', async (t) => {
 
   await t.test('attributes', () => {
     assert.deepEqual(
-      toXast(u('element', {tagName: 'br'}, [])),
+      toXast(
+        // @ts-expect-error: intentionally missing.
+        u('element', {tagName: 'br'}, [])
+      ),
       x('br', {xmlns: ns.html}),
       'should not fail for elements without properties'
     )
