@@ -56,14 +56,14 @@ npm install hast-util-to-xast
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {toXast} from "https://esm.sh/hast-util-to-xast@2"
+import {toXast} from "https://esm.sh/hast-util-to-xast@3"
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {toXast} from "https://esm.sh/hast-util-to-xast@2?bundle"
+  import {toXast} from "https://esm.sh/hast-util-to-xast@3?bundle"
 </script>
 ```
 
