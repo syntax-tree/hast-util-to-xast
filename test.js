@@ -1,58 +1,52 @@
+/**
+ * @typedef {import('mdast-util-to-hast')}
+ */
+
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import {webNamespaces as ns} from 'web-namespaces'
-import {u} from 'unist-builder'
 import {h, s} from 'hastscript'
+import {u} from 'unist-builder'
+import {webNamespaces} from 'web-namespaces'
 import {x} from 'xastscript'
 import {toXast} from './index.js'
-import * as mod from './index.js'
 
-test('toXast', async (t) => {
-  assert.deepEqual(
-    Object.keys(mod).sort(),
-    ['toXast'],
-    'should expose the public api'
-  )
+test('main', async function (t) {
+  await t.test('should expose the public api', async function () {
+    assert.deepEqual(Object.keys(await import('./index.js')).sort(), ['toXast'])
+  })
 
-  await t.test('main', () => {
-    assert.equal(typeof toXast, 'function', 'should expose a function')
+  await t.test('should throw without node', async function () {
+    assert.throws(function () {
+      // @ts-expect-error: check how the runtime handles a missing node.
+      toXast()
+    }, /Error: Expected node, not `undefined`/)
+  })
 
-    assert.throws(
-      () => {
-        // @ts-expect-error runtime.
-        toXast()
-      },
-      /Error: Expected node, not `undefined`/,
-      'should throw without node'
-    )
+  await t.test('should throw if a node cannot be handled', async function () {
+    assert.throws(function () {
+      toXast({type: 'raw', value: '<script>alert(1)</script>'})
+    }, /Error: Cannot transform node of type `raw`/)
+  })
 
-    assert.throws(
-      () => {
-        // @ts-expect-error well-known.
-        toXast({type: 'raw', value: '<script>alert(1)</script>'})
-      },
-      /Error: Cannot transform node of type `raw`/,
-      'should throw if a node cannot be handled'
-    )
+  await t.test('should support html', async function () {
+    assert.deepEqual(toXast(h('div')), x('div', {xmlns: webNamespaces.html}))
+  })
 
-    assert.deepEqual(
-      toXast(h('div')),
-      x('div', {xmlns: ns.html}),
-      'should support html'
-    )
-
+  await t.test('should support `options.space` (svg)', async function () {
     assert.deepEqual(
       toXast(s('rect'), {space: 'svg'}),
-      x('rect', {xmlns: ns.svg}),
-      'should support `options.space` (svg)'
+      x('rect', {xmlns: webNamespaces.svg})
     )
+  })
 
+  await t.test('should support `space` (svg)', async function () {
     assert.deepEqual(
       toXast(s('circle'), 'svg'),
-      x('circle', {xmlns: ns.svg}),
-      'should support `space` (svg)'
+      x('circle', {xmlns: webNamespaces.svg})
     )
+  })
 
+  await t.test('should support positional information', async function () {
     assert.deepEqual(
       toXast({
         type: 'text',
@@ -69,64 +63,75 @@ test('toXast', async (t) => {
           start: {line: 1, column: 1, offset: undefined},
           end: {line: 1, column: 4, offset: undefined}
         }
-      },
-      'should support positional information'
+      }
     )
   })
+})
 
-  await t.test('root', () => {
+test('root', async function (t) {
+  await t.test('should support a root node', async function () {
     assert.deepEqual(
       toXast(u('root', [h('div', 'Alpha')])),
-      u('root', [x('div', {xmlns: ns.html}, 'Alpha')]),
-      'should support a root node'
+      u('root', [x('div', {xmlns: webNamespaces.html}, 'Alpha')])
     )
   })
+})
 
-  await t.test('text', () => {
-    assert.deepEqual(
-      toXast(u('text', 'Alpha')),
-      u('text', 'Alpha'),
-      'should support a text node'
-    )
-
-    assert.deepEqual(
-      // @ts-expect-error runtime.
-      toXast(u('text')),
-      u('text', ''),
-      'should support a void text node'
-    )
+test('text', async function (t) {
+  await t.test('should support a text node', async function () {
+    assert.deepEqual(toXast(u('text', 'Alpha')), u('text', 'Alpha'))
   })
 
-  await t.test('comment', () => {
+  await t.test('should support a void text node', async function () {
     assert.deepEqual(
-      toXast(u('comment', 'Alpha')),
-      u('comment', 'Alpha'),
-      'should support a comment node'
-    )
-
-    assert.deepEqual(
-      // @ts-expect-error runtime.
-      toXast(u('comment')),
-      u('comment', ''),
-      'should support a void comment node'
+      toXast(
+        // @ts-expect-error: check how the runtime handles a missing `value` field.
+        {type: 'text'}
+      ),
+      u('text', '')
     )
   })
+})
 
-  await t.test('doctype', () => {
+test('comment', async function (t) {
+  await t.test('should support a comment node', async function () {
+    assert.deepEqual(toXast(u('comment', 'Alpha')), u('comment', 'Alpha'))
+  })
+
+  await t.test('should support a void comment node', async function () {
+    assert.deepEqual(
+      toXast(
+        // @ts-expect-error: check how the runtime handles a missing `value` field.
+        {type: 'comment'}
+      ),
+      u('comment', '')
+    )
+  })
+})
+
+test('doctype', async function (t) {
+  await t.test('should support a doctype node', async function () {
     assert.deepEqual(
       toXast(u('doctype')),
-      u('doctype', {name: 'html', public: undefined, system: undefined}),
-      'should support a doctype node'
+      u('doctype', {name: 'html', public: undefined, system: undefined})
+    )
+  })
+})
+
+test('element', async function (t) {
+  await t.test('should support elements', async function () {
+    assert.deepEqual(
+      toXast(h('p', [h('a', 'A'), ' & ', h('b', 'B'), '.'])),
+      x('p', {xmlns: webNamespaces.html}, [
+        x('a', 'A'),
+        ' & ',
+        x('b', 'B'),
+        '.'
+      ])
     )
   })
 
-  await t.test('element', () => {
-    assert.deepEqual(
-      toXast(h('p', [h('a', 'A'), ' & ', h('b', 'B'), '.'])),
-      x('p', {xmlns: ns.html}, [x('a', 'A'), ' & ', x('b', 'B'), '.']),
-      'should support elements'
-    )
-
+  await t.test('should support template elements', async function () {
     assert.deepEqual(
       toXast({
         type: 'element',
@@ -138,188 +143,254 @@ test('toXast', async (t) => {
           children: [h('p', [h('b', 'Bold'), ' and ', h('i', 'italic'), '.'])]
         }
       }),
-      x('template', {xmlns: ns.html}, [
+      x('template', {xmlns: webNamespaces.html}, [
         x('p', [x('b', 'Bold'), ' and ', x('i', 'italic'), '.'])
-      ]),
-      'should support template elements'
+      ])
     )
+  })
 
+  await t.test('should support attributes', async function () {
     assert.deepEqual(
       toXast(h('p#a.b.c', {ariaLabel: 'd', dataE: 'f'}, 'Alpha')),
       x(
         'p',
         {
-          xmlns: ns.html,
+          xmlns: webNamespaces.html,
           id: 'a',
           class: 'b c',
           'aria-label': 'd',
           'data-e': 'f'
         },
         ['Alpha']
-      ),
-      'should support attributes'
+      )
+    )
+  })
+})
+
+test('attributes', async function (t) {
+  await t.test(
+    'should not fail for elements without properties',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          // @ts-expect-error: check how the runtime handles a missing `properties` field.
+          {type: 'element', tagName: 'br', children: []}
+        ),
+        x('br', {xmlns: webNamespaces.html})
+      )
+    }
+  )
+
+  await t.test('should support attribute values: `null`', async function () {
+    assert.deepEqual(
+      toXast(u('element', {tagName: 'br', properties: {prop: null}}, [])),
+      x('br', {xmlns: webNamespaces.html})
     )
   })
 
-  await t.test('attributes', () => {
-    assert.deepEqual(
-      toXast(
-        // @ts-expect-error: intentionally missing.
-        u('element', {tagName: 'br'}, [])
-      ),
-      x('br', {xmlns: ns.html}),
-      'should not fail for elements without properties'
-    )
+  await t.test(
+    'should support attribute values: `undefined`',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u('element', {tagName: 'br', properties: {prop: undefined}}, [])
+        ),
+        x('br', {xmlns: webNamespaces.html})
+      )
+    }
+  )
 
-    assert.deepEqual(
-      toXast(u('element', {tagName: 'br', properties: {prop: null}}, [])),
-      x('br', {xmlns: ns.html}),
-      'should support attribute values: `null`'
-    )
-
-    assert.deepEqual(
-      toXast(u('element', {tagName: 'br', properties: {prop: undefined}}, [])),
-      x('br', {xmlns: ns.html}),
-      'should support attribute values: `undefined`'
-    )
-
+  await t.test('should support attribute values: `NaN`', async function () {
     assert.deepEqual(
       toXast(u('element', {tagName: 'br', properties: {prop: Number.NaN}}, [])),
-      x('br', {xmlns: ns.html}),
-      'should support attribute values: `NaN`'
+      x('br', {xmlns: webNamespaces.html})
     )
+  })
 
+  await t.test('should support attribute values: `false`', async function () {
     assert.deepEqual(
       toXast(u('element', {tagName: 'br', properties: {prop: false}}, [])),
-      x('br', {xmlns: ns.html}),
-      'should support attribute values: `false`'
+      x('br', {xmlns: webNamespaces.html})
     )
+  })
 
+  await t.test('should support attribute values: `true`', async function () {
     assert.deepEqual(
       toXast(u('element', {tagName: 'br', properties: {prop: true}}, [])),
-      x('br', {xmlns: ns.html, prop: ''}),
-      'should support attribute values: `true`'
+      x('br', {xmlns: webNamespaces.html, prop: ''})
     )
+  })
 
-    assert.deepEqual(
-      toXast(u('element', {tagName: 'script', properties: {async: 0}}, [])),
-      x('script', {xmlns: ns.html}),
-      'should support known falsey boolean attribute values'
-    )
+  await t.test(
+    'should support known falsey boolean attribute values',
+    async function () {
+      assert.deepEqual(
+        toXast(u('element', {tagName: 'script', properties: {async: 0}}, [])),
+        x('script', {xmlns: webNamespaces.html})
+      )
+    }
+  )
 
+  await t.test('should support numeric attribute values', async function () {
     assert.deepEqual(
       toXast(u('element', {tagName: 'br', properties: {prop: 1.2}}, [])),
-      x('br', {xmlns: ns.html, prop: '1.2'}),
-      'should support numeric attribute values'
+      x('br', {xmlns: webNamespaces.html, prop: '1.2'})
     )
+  })
 
-    assert.deepEqual(
-      toXast(
-        u('element', {tagName: 'br', properties: {className: ['a', 'b']}}, [])
-      ),
-      x('br', {xmlns: ns.html, class: 'a b'}),
-      'should support known space-separated attribute values'
-    )
-
-    assert.deepEqual(
-      toXast(
-        u('element', {tagName: 'br', properties: {accept: ['a', 'b']}}, [])
-      ),
-      x('br', {xmlns: ns.html, accept: 'a, b'}),
-      'should support known comma-separated attribute values'
-    )
-
-    assert.deepEqual(
-      toXast(u('element', {tagName: 'br', properties: {xmlLang: 'en'}}, [])),
-      x('br', {xmlns: ns.html, 'xml:lang': 'en'}),
-      'should support attributes in the xml space (1)'
-    )
-
-    assert.deepEqual(
-      toXast(
-        u('element', {tagName: 'svg', properties: {xmlSpace: 'preserve'}}, [])
-      ),
-      x('svg', {xmlns: ns.svg, 'xml:space': 'preserve'}),
-      'should support attributes in the xml space (2)'
-    )
-
-    assert.deepEqual(
-      toXast(
-        u('element', {tagName: 'svg', properties: {xmlnsXLink: ns.xlink}}, [])
-      ),
-      x('svg', {xmlns: ns.svg, 'xmlns:xlink': ns.xlink}),
-      'should support attributes in the xmlns space'
-    )
-
-    assert.deepEqual(
-      toXast(
-        u(
-          'element',
-          {
-            tagName: 'use',
-            properties: {x: 5, y: 5, xmlnsXLink: ns.xlink, xLinkHref: '#a'}
-          },
-          []
+  await t.test(
+    'should support known space-separated attribute values',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u('element', {tagName: 'br', properties: {className: ['a', 'b']}}, [])
         ),
-        'svg'
-      ),
-      x('use', {
-        xmlns: ns.svg,
-        x: '5',
-        y: '5',
-        'xmlns:xlink': ns.xlink,
-        'xlink:href': '#a'
-      }),
-      'should support attributes in the xlink space'
-    )
+        x('br', {xmlns: webNamespaces.html, class: 'a b'})
+      )
+    }
+  )
 
+  await t.test(
+    'should support known comma-separated attribute values',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u('element', {tagName: 'br', properties: {accept: ['a', 'b']}}, [])
+        ),
+        x('br', {xmlns: webNamespaces.html, accept: 'a, b'})
+      )
+    }
+  )
+
+  await t.test(
+    'should support attributes in the xml space (1)',
+    async function () {
+      assert.deepEqual(
+        toXast(u('element', {tagName: 'br', properties: {xmlLang: 'en'}}, [])),
+        x('br', {xmlns: webNamespaces.html, 'xml:lang': 'en'})
+      )
+    }
+  )
+
+  await t.test(
+    'should support attributes in the xml space (2)',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u('element', {tagName: 'svg', properties: {xmlSpace: 'preserve'}}, [])
+        ),
+        x('svg', {xmlns: webNamespaces.svg, 'xml:space': 'preserve'})
+      )
+    }
+  )
+
+  await t.test(
+    'should support attributes in the xmlns space',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u(
+            'element',
+            {tagName: 'svg', properties: {xmlnsXLink: webNamespaces.xlink}},
+            []
+          )
+        ),
+        x('svg', {xmlns: webNamespaces.svg, 'xmlns:xlink': webNamespaces.xlink})
+      )
+    }
+  )
+
+  await t.test(
+    'should support attributes in the xlink space',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u(
+            'element',
+            {
+              tagName: 'use',
+              properties: {
+                x: 5,
+                y: 5,
+                xmlnsXLink: webNamespaces.xlink,
+                xLinkHref: '#a'
+              }
+            },
+            []
+          ),
+          'svg'
+        ),
+        x('use', {
+          xmlns: webNamespaces.svg,
+          x: '5',
+          y: '5',
+          'xmlns:xlink': webNamespaces.xlink,
+          'xlink:href': '#a'
+        })
+      )
+    }
+  )
+
+  await t.test('should include random prefixes', async function () {
     assert.deepEqual(
       toXast(
         u('element', {tagName: 'x', properties: {'alpha:bravo': 'charlie'}}, [])
       ),
-      x('x', {xmlns: ns.html, 'alpha:bravo': 'charlie'}),
-      'should include random prefixes'
-    )
-
-    assert.deepEqual(
-      toXast(
-        u(
-          'element',
-          {tagName: 'x', properties: {xLinkHref: '#a', xLinkTitle: 'b'}},
-          []
-        )
-      ),
-      x('x', {
-        xmlns: ns.html,
-        'xlink:href': '#a',
-        'xlink:title': 'b'
-      }),
-      'should include undefined prefixed attributes'
+      x('x', {xmlns: webNamespaces.html, 'alpha:bravo': 'charlie'})
     )
   })
 
-  await t.test('aria', () => {
+  await t.test(
+    'should include undefined prefixed attributes',
+    async function () {
+      assert.deepEqual(
+        toXast(
+          u(
+            'element',
+            {tagName: 'x', properties: {xLinkHref: '#a', xLinkTitle: 'b'}},
+            []
+          )
+        ),
+        x('x', {
+          xmlns: webNamespaces.html,
+          'xlink:href': '#a',
+          'xlink:title': 'b'
+        })
+      )
+    }
+  )
+})
+
+test('aria', async function (t) {
+  await t.test('should support aria', async function () {
     assert.deepEqual(
       toXast(
         h('a', {ariaHidden: 'true', href: '#lorem-ipsum'}, [
           h('span.icon.icon-link')
         ])
       ),
-      x('a', {xmlns: ns.html, 'aria-hidden': 'true', href: '#lorem-ipsum'}, [
-        x('span', {class: 'icon icon-link'})
-      ]),
-      'should support aria'
+      x(
+        'a',
+        {
+          xmlns: webNamespaces.html,
+          'aria-hidden': 'true',
+          href: '#lorem-ipsum'
+        },
+        [x('span', {class: 'icon icon-link'})]
+      )
     )
   })
+})
 
-  await t.test('svg', () => {
+test('svg', async function (t) {
+  await t.test('should support svg', async function () {
     assert.deepEqual(
       toXast(
         s(
           'svg',
           {
-            xmlns: ns.svg,
-            xmlnsXLink: ns.xlink,
+            xmlns: webNamespaces.svg,
+            xmlnsXLink: webNamespaces.xlink,
             width: 500,
             height: 500,
             viewBox: [0, 0, 500, 500]
@@ -333,8 +404,8 @@ test('toXast', async (t) => {
       x(
         'svg',
         {
-          xmlns: ns.svg,
-          'xmlns:xlink': ns.xlink,
+          xmlns: webNamespaces.svg,
+          'xmlns:xlink': webNamespaces.xlink,
           width: '500',
           height: '500',
           viewBox: '0 0 500 500'
@@ -343,10 +414,11 @@ test('toXast', async (t) => {
           x('title', 'SVG `<circle>` element'),
           x('circle', {cx: '120', cy: '120', r: '100'})
         ]
-      ),
-      'should support svg'
+      )
     )
+  })
 
+  await t.test('should support svg in html', async function () {
     assert.deepEqual(
       toXast(
         u('root', [
@@ -363,18 +435,19 @@ test('toXast', async (t) => {
       ),
       u('root', [
         u('doctype', {name: 'html', public: undefined, system: undefined}),
-        x('html', {xmlns: ns.html}, [
+        x('html', {xmlns: webNamespaces.html}, [
           x('head', [x('title', 'The SVG `<circle>` element')]),
           x('body', [
-            x('svg', {xmlns: ns.svg, viewBox: '0 0 500 500'}, [
+            x('svg', {xmlns: webNamespaces.svg, viewBox: '0 0 500 500'}, [
               x('circle', {cx: '120', cy: '120', r: '100'})
             ])
           ])
         ])
-      ]),
-      'should support svg in html'
+      ])
     )
+  })
 
+  await t.test('should support html in svg in html', async function () {
     assert.deepEqual(
       toXast(
         u('root', [
@@ -384,7 +457,9 @@ test('toXast', async (t) => {
             h('body', [
               s('svg', {width: 800, height: 500}, [
                 s('foreignObject', {x: 40, y: 20, width: 200, height: 300}, [
-                  h('body', {xmlns: ns.html}, [h('div', 'Lorem ipsum.')])
+                  h('body', {xmlns: webNamespaces.html}, [
+                    h('div', 'Lorem ipsum.')
+                  ])
                 ])
               ])
             ])
@@ -393,42 +468,50 @@ test('toXast', async (t) => {
       ),
       u('root', [
         u('doctype', {name: 'html', public: undefined, system: undefined}),
-        x('html', {xmlns: ns.html}, [
+        x('html', {xmlns: webNamespaces.html}, [
           x('head', [x('title', 'The SVG `<foreignObject>` element')]),
           x('body', [
-            x('svg', {xmlns: ns.svg, width: '800', height: '500'}, [
+            x('svg', {xmlns: webNamespaces.svg, width: '800', height: '500'}, [
               x(
                 'foreignObject',
                 {x: '40', y: '20', width: '200', height: '300'},
-                [x('body', {xmlns: ns.html}, [x('div', 'Lorem ipsum.')])]
+                [
+                  x('body', {xmlns: webNamespaces.html}, [
+                    x('div', 'Lorem ipsum.')
+                  ])
+                ]
               )
             ])
           ])
         ])
-      ]),
-      'should support html in svg in html'
+      ])
     )
   })
+})
 
-  await t.test('mathml', () => {
+test('mathml', async function (t) {
+  await t.test('should *not really* support mathml', async function () {
     assert.deepEqual(
       toXast(
         u('element', {tagName: 'p', properties: {}}, [
-          u('element', {tagName: 'math', properties: {xmlns: ns.mathml}}, [
-            u('element', {tagName: 'mi', properties: {}}, [u('text', 'x')]),
-            u('element', {tagName: 'mo', properties: {}}, [u('text', '=')]),
-            u('element', {tagName: 'mfrac', properties: {form: 'prefix'}}, [])
-          ])
+          u(
+            'element',
+            {tagName: 'math', properties: {xmlns: webNamespaces.mathml}},
+            [
+              u('element', {tagName: 'mi', properties: {}}, [u('text', 'x')]),
+              u('element', {tagName: 'mo', properties: {}}, [u('text', '=')]),
+              u('element', {tagName: 'mfrac', properties: {form: 'prefix'}}, [])
+            ]
+          )
         ])
       ),
-      x('p', {xmlns: ns.html}, [
-        x('math', {xmlns: ns.mathml}, [
+      x('p', {xmlns: webNamespaces.html}, [
+        x('math', {xmlns: webNamespaces.mathml}, [
           x('mi', 'x'),
           x('mo', '='),
           x('mfrac', {form: 'prefix'})
         ])
-      ]),
-      'should *not really* support mathml'
+      ])
     )
   })
 })
