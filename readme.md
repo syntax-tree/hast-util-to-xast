@@ -47,7 +47,7 @@ hast into estree (JavaScript) as JSX, which has some similarities to XML.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+ and or 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install hast-util-to-xast
@@ -105,7 +105,7 @@ console.log(toXml(xast))
 
 ## API
 
-This package exports the identifier [`toXast`][toxast].
+This package exports the identifier [`toXast`][api-to-xast].
 There is no default export.
 
 ### `toXast(tree[, options])`
@@ -116,7 +116,7 @@ Turn a [hast][] tree into a [xast][] tree.
 
 *   `tree` ([`HastNode`][hast-node])
     — hast tree to transform
-*   `options` ([`Options`][options], optional)
+*   `options` ([`Options`][api-options], optional)
     — configuration
 
 ###### Returns
@@ -131,7 +131,7 @@ Configuration (TypeScript type).
 
 ###### `space`
 
-Which space the document is in.
+Which space the document is in ([`Space`][api-space], default: `'html'`).
 
 When an `<svg>` element is found in the HTML space, this package already
 automatically switches to and from the SVG space when entering and exiting it.
@@ -152,14 +152,18 @@ type Space = 'html' | 'svg'
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types [`Options`][options] and [`Space`][space].
+It exports the additional types [`Options`][api-options] and
+[`Space`][api-space].
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 14.14+ and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `hast-util-to-xast@^2`,
+compatible with Node.js 12.
 
 ## Security
 
@@ -204,9 +208,9 @@ abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/hast-util-to-xast
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/hast-util-to-xast.svg
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=hast-util-to-xast
 
-[size]: https://bundlephobia.com/result?p=hast-util-to-xast
+[size]: https://bundlejs.com/?q=hast-util-to-xast
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -250,8 +254,8 @@ abide by its terms.
 
 [xast-node]: https://github.com/syntax-tree/xast#nodes
 
-[toxast]: #toxasttree-options
+[api-to-xast]: #toxasttree-options
 
-[options]: #options
+[api-options]: #options
 
-[space]: #space-1
+[api-space]: #space-1
