@@ -1,36 +1,36 @@
 # hast-util-to-xast
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
-[![Sponsors][sponsors-badge]][collective]
-[![Backers][backers-badge]][collective]
-[![Chat][chat-badge]][chat]
+[![Build][badge-build-image]][badge-build-url]
+[![Coverage][badge-coverage-image]][badge-coverage-url]
+[![Downloads][badge-downloads-image]][badge-downloads-url]
+[![Size][badge-size-image]][badge-size-url]
 
-[hast][] (HTML) utility to transform to [xast][] (XML).
+[hast][github-hast] (HTML) utility to transform to [xast][github-xast] (XML).
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`toXast(tree[, options])`](#toxasttree-options)
-    *   [`Options`](#options)
-    *   [`Space`](#space-1)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Security](#security)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`toXast(tree[, options])`](#toxasttree-options)
+  * [`Options`](#options)
+  * [`Space`](#space-1)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Security](#security)
+* [Related](#related)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
-This package is a utility that takes a [hast][] (HTML) syntax tree as input and
-turns it into a [xast][] (XML) syntax tree.
+This package is a utility that takes a
+[hast][github-hast] (HTML)
+syntax tree as input and turns it into a
+[xast][github-xast] (XML)
+syntax tree.
 This package also supports embedded MDX nodes.
 
 ## When should I use this?
@@ -41,13 +41,15 @@ One example of this is for EPUB (digital books).
 
 There is no inverse of this utility, because not all XML is HTML.
 
-A similar package, [`hast-util-to-estree`][hast-util-to-estree], can turn
-hast into estree (JavaScript) as JSX, which has some similarities to XML.
+A similar package, [`hast-util-to-estree`][github-hast-util-to-estree],
+can turn hast into estree (JavaScript) as JSX,
+which has some similarities to XML.
 
 ## Install
 
-This package is [ESM only][esm].
-In Node.js (version 16+), install with [npm][]:
+This package is [ESM only][github-gist-esm].
+In Node.js (version 16+), install with
+[npm][npmjs-install]:
 
 ```sh
 npm install hast-util-to-xast
@@ -56,14 +58,14 @@ npm install hast-util-to-xast
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {toXast} from "https://esm.sh/hast-util-to-xast@3"
+import {toXast} from 'https://esm.sh/hast-util-to-xast@3'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {toXast} from "https://esm.sh/hast-util-to-xast@3?bundle"
+  import {toXast} from 'https://esm.sh/hast-util-to-xast@3?bundle'
 </script>
 ```
 
@@ -110,18 +112,18 @@ There is no default export.
 
 ### `toXast(tree[, options])`
 
-Turn a [hast][] tree into a [xast][] tree.
+Turn a [hast][github-hast] tree into a [xast][github-xast] tree.
 
 ###### Parameters
 
-*   `tree` ([`HastNode`][hast-node])
-    — hast tree to transform
-*   `options` ([`Options`][api-options], optional)
-    — configuration
+* `tree` ([`HastNode`][github-hast-nodes])
+  — hast tree to transform
+* `options` ([`Options`][api-options], optional)
+  — configuration
 
 ###### Returns
 
-xast tree ([`XastNode`][xast-node]).
+xast tree ([`XastNode`][github-xast-nodes]).
 
 ### `Options`
 
@@ -168,94 +170,86 @@ compatible with Node.js 16.
 ## Security
 
 Both HTML and XML can be dangerous languages: don’t trust user-provided data.
-Use [`hast-util-santize`][hast-util-sanitize] to make the hast tree safe before
-using this utility.
+Use [`hast-util-santize`][github-hast-util-sanitize]
+to make the hast tree safe before using this utility.
 
 ## Related
 
-*   [`hastscript`](https://github.com/syntax-tree/hastscript)
-    — create **[hast][]** (HTML or SVG) trees
-*   [`xastscript`](https://github.com/syntax-tree/xastscript)
-    — create **[xast][]** (XML) trees
-*   [`xast-util-to-xml`](https://github.com/syntax-tree/xast-util-to-xml)
-    — serialize as XML
+* [`hastscript`](https://github.com/syntax-tree/hastscript)
+  — create [hast][github-hast] (HTML or SVG) trees
+* [`xastscript`](https://github.com/syntax-tree/xastscript)
+  — create [xast][github-xast] (XML) trees
+* [`xast-util-to-xml`](https://github.com/syntax-tree/xast-util-to-xml)
+  — serialize as XML
 
 ## Contribute
 
-See [`contributing.md`][contributing] in [`syntax-tree/.github`][health] for
-ways to get started.
-See [`support.md`][support] for ways to get help.
+See [`contributing.md`][health-contributing]
+in
+[`syntax-tree/.github`][health]
+for ways to get started.
+See [`support.md`][health-support] for ways to get help.
 
-This project has a [code of conduct][coc].
+This project has a [code of conduct][health-coc].
 By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][file-license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
-
-[build-badge]: https://github.com/syntax-tree/hast-util-to-xast/workflows/main/badge.svg
-
-[build]: https://github.com/syntax-tree/hast-util-to-xast/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/hast-util-to-xast.svg
-
-[coverage]: https://codecov.io/github/syntax-tree/hast-util-to-xast
-
-[downloads-badge]: https://img.shields.io/npm/dm/hast-util-to-xast.svg
-
-[downloads]: https://www.npmjs.com/package/hast-util-to-xast
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=hast-util-to-xast
-
-[size]: https://bundlejs.com/?q=hast-util-to-xast
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/syntax-tree/unist/discussions
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[esmsh]: https://esm.sh
-
-[typescript]: https://www.typescriptlang.org
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[health]: https://github.com/syntax-tree/.github
-
-[contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
-
-[support]: https://github.com/syntax-tree/.github/blob/main/support.md
-
-[coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
-
-[hast]: https://github.com/syntax-tree/hast
-
-[hast-node]: https://github.com/syntax-tree/hast#nodes
-
-[hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
-
-[hast-util-to-estree]: https://github.com/syntax-tree/hast-util-to-estree
-
-[xast]: https://github.com/syntax-tree/xast
-
-[xast-node]: https://github.com/syntax-tree/xast#nodes
-
-[api-to-xast]: #toxasttree-options
 
 [api-options]: #options
 
 [api-space]: #space-1
+
+[api-to-xast]: #toxasttree-options
+
+[badge-build-image]: https://github.com/syntax-tree/hast-util-to-xast/workflows/main/badge.svg
+
+[badge-build-url]: https://github.com/syntax-tree/hast-util-to-xast/actions
+
+[badge-coverage-image]: https://img.shields.io/codecov/c/github/syntax-tree/hast-util-to-xast.svg
+
+[badge-coverage-url]: https://codecov.io/github/syntax-tree/hast-util-to-xast
+
+[badge-downloads-image]: https://img.shields.io/npm/dm/hast-util-to-xast.svg
+
+[badge-downloads-url]: https://www.npmjs.com/package/hast-util-to-xast
+
+[badge-size-image]: https://img.shields.io/bundlejs/size/hast-util-to-xast
+
+[badge-size-url]: https://bundlejs.com/?q=hast-util-to-xast
+
+[esmsh]: https://esm.sh
+
+[file-license]: license
+
+[github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[github-hast]: https://github.com/syntax-tree/hast
+
+[github-hast-nodes]: https://github.com/syntax-tree/hast#nodes
+
+[github-hast-util-sanitize]: https://github.com/syntax-tree/hast-util-sanitize
+
+[github-hast-util-to-estree]: https://github.com/syntax-tree/hast-util-to-estree
+
+[github-xast]: https://github.com/syntax-tree/xast
+
+[github-xast-nodes]: https://github.com/syntax-tree/xast#nodes
+
+[health]: https://github.com/syntax-tree/.github
+
+[health-coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
+
+[health-contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
+
+[health-support]: https://github.com/syntax-tree/.github/blob/main/support.md
+
+[npmjs-install]: https://docs.npmjs.com/cli/install
+
+[typescript]: https://www.typescriptlang.org
+
+[wooorm]: https://wooorm.com
