@@ -35,21 +35,24 @@ This package also supports embedded MDX nodes.
 
 ## When should I use this?
 
-This project is useful when you want to deal with ASTs, and for some reason,
+This project is useful when you want to deal with ASTs,
+and for some reason,
 *have* to deal with XML.
 One example of this is for EPUB (digital books).
 
-There is no inverse of this utility, because not all XML is HTML.
+There is no inverse of this utility,
+because not all XML is HTML.
 
-A similar package, [`hast-util-to-estree`][github-hast-util-to-estree],
+A similar package,
+[`hast-util-to-estree`][github-hast-util-to-estree],
 can turn hast into estree (JavaScript) as JSX,
 which has some similarities to XML.
 
 ## Install
 
 This package is [ESM only][github-gist-esm].
-In Node.js (version 16+), install with
-[npm][npmjs-install]:
+In Node.js (version 16+),
+install with [npm][npmjs-install]:
 
 ```sh
 npm install hast-util-to-xast
@@ -116,9 +119,11 @@ Turn a [hast][github-hast] tree into a [xast][github-xast] tree.
 
 ###### Parameters
 
-* `tree` ([`HastNode`][github-hast-nodes])
+* `tree`
+  ([`HastNode`][github-hast-nodes])
   — hast tree to transform
-* `options` ([`Options`][api-options], optional)
+* `options`
+  ([`Options`][api-options], optional)
   — configuration
 
 ###### Returns
@@ -133,13 +138,15 @@ Configuration (TypeScript type).
 
 ###### `space`
 
-Which space the document is in ([`Space`][api-space], default: `'html'`).
+Which space the document is in
+([`Space`][api-space], default: `'html'`).
 
-When an `<svg>` element is found in the HTML space, this package already
-automatically switches to and from the SVG space when entering and exiting it.
+When an `<svg>` element is found in the HTML space,
+this package already automatically switches to and from the SVG space when
+entering and exiting it.
 
-You can also switch explicitly with `xmlns` properties in hast, but note that
-only HTML and SVG are supported.
+You can also switch explicitly with `xmlns` properties in hast,
+but note that only HTML and SVG are supported.
 
 ### `Space`
 
@@ -162,14 +169,16 @@ It exports the additional types [`Options`][api-options] and
 Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
 
-When we cut a new major release, we drop support for unmaintained versions of
-Node.
-This means we try to keep the current release line, `hast-util-to-xast@^3`,
+When we cut a new major release,
+we drop support for unmaintained versions of Node.
+This means we try to keep the current release line,
+`hast-util-to-xast@3`,
 compatible with Node.js 16.
 
 ## Security
 
-Both HTML and XML can be dangerous languages: don’t trust user-provided data.
+Both HTML and XML can be dangerous languages:
+don’t trust user-provided data.
 Use [`hast-util-santize`][github-hast-util-sanitize]
 to make the hast tree safe before using this utility.
 
@@ -191,8 +200,9 @@ for ways to get started.
 See [`support.md`][health-support] for ways to get help.
 
 This project has a [code of conduct][health-coc].
-By interacting with this repository, organization, or community you agree to
-abide by its terms.
+By interacting with this repository,
+organization,
+or community you agree to abide by its terms.
 
 ## License
 
